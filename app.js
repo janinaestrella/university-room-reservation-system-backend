@@ -17,13 +17,6 @@ mongoose.connect('mongodb://localhost:27017/URRS',
 
 app.use(bodyParser.json())
 
-app.use((req,res, next)=>{
-	console.log(req.method); //makikita sa nodemon cli
-	console.log(req.ip);
-	res.send("responded"); //one time lang pwede mag respond 
-	next()
-})
-
 //middlewares
 app.use('/rooms', rooms);
 
