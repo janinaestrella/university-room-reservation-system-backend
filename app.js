@@ -3,6 +3,7 @@ const bodyParser = require('body-parser'); //npm install body-parser
 const mongoose = require('mongoose'); //npm install mongoose
 
 const rooms = require('./routes/rooms');
+const reservations = require('./routes/reservations');
 
 //initialize the app
 const app = express();
@@ -19,6 +20,7 @@ app.use(bodyParser.json())
 
 //middlewares
 app.use('/rooms', rooms);
+app.use('/reservations', reservations);
 
 // port to be used
 app.listen(3000, () => {
