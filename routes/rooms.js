@@ -28,15 +28,24 @@ router.post('/', upload.single('image'), (req, res, next) => {
 });
 
 //GET ALL or INDEX
-// router.get('/', (req,res,next) => {
-// 	Room.find()
-// 	.then (rooms => {
-// 		return res.send(rooms)
-// 	})
-// 	.catch(next)
-// })
+router.get('/', (req,res,next) => {
+	Room.find()
+	.then (rooms => {
+		return res.send(rooms)
+	})
+	.catch(next)
+})
 
 //GET SPECIFIC
+router.get('/:id', (req,res,next) => {
+	Room.findById(req.params.id)
+	.then (room => {
+		return res.send(room)
+	})
+	.catch(next)
+
+})
+
 //DELETE
 //EDIT
 
