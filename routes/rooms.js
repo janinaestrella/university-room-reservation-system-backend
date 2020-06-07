@@ -47,6 +47,14 @@ router.get('/:id', (req,res,next) => {
 })
 
 //DELETE
+router.delete('/:id', (req,res,next) => {
+	Room.findByIdAndRemove(req.params.id)
+	.then (room => {
+		return res.send(room)
+	})
+	.catch(next)
+})
+
 //EDIT
 
 
