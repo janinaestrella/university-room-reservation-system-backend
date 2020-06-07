@@ -56,6 +56,22 @@ router.delete('/:id', (req,res,next) => {
 })
 
 //EDIT
+router.put('/:id', upload.single('image'), (req,res,next) => {
 
+	//update image if new image is existing, else do nothing
+	if(req.file){
+		req.body.image = req.file.filename
+	}
+
+	Room.findByIdAndUpdate(
+		req.params.id,
+		req.body,
+		{new: true}
+		)
+	.then (room => {
+		return res.send(room)
+	})
+	.catch(next)
+})
 
 module.exports = router;
