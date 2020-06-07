@@ -1,21 +1,40 @@
 const router = require('express').Router();
+const multer = require('multer');  //npm install multer for uploading and saving images/files
 const Room = require ('./../models/Room');
 
+//multer settings
+//set the destination where the file will be saved
+const storage = multer.diskStorage({
+	destination: function(req,file,cb){ 
+		cb(null,'assets/images') //null - error message
+	},
+
+	filename: function(req,file,cb){
+		//file will contain all information about the uploaded file
+		// console.log(file)
+		cb(null,Date.now() + "-" + file.originalname )
+	}
+})
+
+//middleware to access multer 
+const upload = multer({ storage }) 
+
 //CREATE
-router.post('/', (req, res, next) => {
+router.post('/', upload.single('image'), (req, res, next) => {
+	req.body.image = req.file.filename
 	Room.create(req.body)
 	.then (room => res.send(room))
 	.catch(next)
 });
 
 //GET ALL or INDEX
-router.get('/', (req,res,next) => {
-	Room.find()
-	.then (rooms => {
-		return res.send(rooms)
-	})
-	.catch(next)
-})
+// router.get('/', (req,res,next) => {
+// 	Room.find()
+// 	.then (rooms => {
+// 		return res.send(rooms)
+// 	})
+// 	.catch(next)
+// })
 
 //GET SPECIFIC
 //DELETE
