@@ -102,6 +102,13 @@ router.post('/login', (req,res,next) => {
 
 //profile
 router.get('/profile', (req,res,next) => {
+	res.send({
+		_id: req.user._id,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname,
+		email: req.user.email,
+		isAdmin: req.user.isAdmin,
+	})
 
 })
 
