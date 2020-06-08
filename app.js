@@ -8,6 +8,7 @@ const users = require('./routes/users');
 
 //initialize the app
 const app = express();
+const port = process.env.PORT || 5000
 
 //connect to database
 mongoose.connect('mongodb://localhost:27017/URRS', 
@@ -19,12 +20,16 @@ mongoose.connect('mongodb://localhost:27017/URRS',
 
 app.use(bodyParser.json())
 
+app.use('/', (req,res) => {
+	res.send("welomce to backend")
+})
+
 //middlewares
 app.use('/rooms', rooms);
 app.use('/reservations', reservations);
 app.use('/users', users);
 
 // port to be used
-app.listen(3000, () => {
-	console.log("App is running in port 3000");
+app.listen(port, () => {
+	console.log(`App is listening to port ${port}`);
 })
