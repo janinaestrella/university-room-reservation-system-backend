@@ -25,6 +25,13 @@ app.use('/rooms', rooms);
 app.use('/reservations', reservations);
 app.use('/users', users);
 
+// error handling middleware
+app.use((err,req,res,next)=> {
+	res.status(400).send({
+		error: err.message
+	})
+})
+
 // port to be used
 app.listen(port, () => {
 	console.log(`App is listening to port ${port}`);
