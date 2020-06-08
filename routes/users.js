@@ -56,7 +56,48 @@ router.post('/register', (req,res,next) => {
 
 //login
 router.post('/login', (req,res,next) => {
+	//validation
+	const {
+		email, 
+		password} = req.body
 
+	if(!email || !password) {
+		return res.status(400).send({
+			error: "Check credentials"
+		})
+	}
+	
+	User.findOne({email})
+	.then(user => {
+		if(!user){
+			return res.status(400).send({
+				error: "Check credential"
+			})
+		} else {
+			bcrypt.compare(password, user.password, function (err,result){ 
+				if(result) {
+
+					return res.send({
+						message: "Successful Login",
+						user : {
+							_id: user._id,
+							firstname: user.firstname,
+							lastname: user.lastname,
+							email: user.email,
+							password: user.password,
+							confirmPassword: user.confirmPassword,
+							isAdmin: user.isAdmin
+						}
+					})
+				} else { 
+					return res.status(400).send({
+					error: "Check credentials"
+					})
+				}
+				
+			})
+		}
+	})
 })
 
 //profile
