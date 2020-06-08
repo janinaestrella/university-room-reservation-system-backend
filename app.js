@@ -20,10 +20,6 @@ mongoose.connect('mongodb://localhost:27017/URRS',
 
 app.use(bodyParser.json())
 
-app.use('/', (req,res) => {
-	res.send("welomce to backend")
-})
-
 //middlewares
 app.use('/rooms', rooms);
 app.use('/reservations', reservations);
