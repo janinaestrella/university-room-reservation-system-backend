@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const User = require ('./../models/User');
 const bcrypt = require('bcrypt'); //npm install bcrypt
+const passport = require('passport'); //npm install passport 
+const jwt = require('jsonwebtoken'); //npm install passport-jwt  jsonwebtoken
+require('./../passport-setup');
 
 //register
 router.post('/register', (req,res,next) => {
