@@ -3,8 +3,25 @@ const Schema = mongoose.Schema;
 
 
 const ReservationSchema = new Schema({
-	name:{
+	studentId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+	},
+
+	studentName: {
 		type: String
+	},
+	
+	//Requested rooms
+	rooms: [{}],
+
+	// dateIn, dateOut
+	// timeIn, timeOut
+
+	//Reservation status
+	isApproved: {
+		type: Boolean,
+		default: false
 	}
 	
 })
