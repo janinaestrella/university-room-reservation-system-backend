@@ -79,16 +79,18 @@ router.post('/login', (req,res,next) => {
 		} else {
 			bcrypt.compare(password, user.password, function (err,result){ 
 				if(result) {
+					
+					//generate token
+					const token = jwt.sign({ _id: user._id}, 'secret')
 
 					return res.send({
 						message: "Successful Login",
+						token,
 						user : {
 							_id: user._id,
 							firstname: user.firstname,
 							lastname: user.lastname,
 							email: user.email,
-							password: user.password,
-							confirmPassword: user.confirmPassword,
 							isAdmin: user.isAdmin
 						}
 					})
@@ -104,7 +106,7 @@ router.post('/login', (req,res,next) => {
 })
 
 //profile
-router.get('/profile', (req,res,next) => {
+router.get('/profile', passport.authenticate('jwt', {session: false}), (req,res,next) => {
 	res.send({
 		_id: req.user._id,
 		firstname: req.user.firstname,
