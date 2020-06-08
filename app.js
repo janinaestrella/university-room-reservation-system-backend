@@ -24,6 +24,7 @@ app.use(bodyParser.json())
 app.use('/rooms', rooms);
 app.use('/reservations', reservations);
 app.use('/users', users);
+app.use('/public', express.static('assets/images'))
 
 // error handling middleware
 app.use((err,req,res,next)=> {

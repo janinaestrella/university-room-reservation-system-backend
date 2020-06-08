@@ -18,7 +18,7 @@ router.post('/register', (req,res,next) => {
 
 	if(!firstname || !lastname || !email || !password || !confirmPassword){
 		return res.status(400).send({
-			error: "Incomplete fields"
+			error: "All fields are required"
 		})
 	}
 

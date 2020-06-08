@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 const RoomSchema = new Schema({
 	name : {
 		type: String, 
-		unique: true,
 		required: [true, 'Room name is required'],
 		max: [120, 'Maximum of 120 characters']
 	},
@@ -20,10 +19,12 @@ const RoomSchema = new Schema({
 		type: String,
 		required: [true, 'Location of room is required']
 	},
+
 	description: {
 		type: String,
 		required: [true, 'Description is required']
 	},
+	
 	image: {
 		type: String,
 		required: [true, 'Image is required']
