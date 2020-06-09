@@ -1,7 +1,5 @@
 const mongoose = require ('mongoose');
 const Schema = mongoose.Schema;
-const moment = require('moment');
-
 
 const ReservationSchema = new Schema({
 	userId: {
@@ -23,11 +21,11 @@ const ReservationSchema = new Schema({
 		type: String
 	},
 
-	reservedDateFrom: {
+	reserveFrom: {
 		type: Date
 	},
 
-	reservedDateTo: {
+	reserveUntil: {
 		type: Date
 	},
 

@@ -15,29 +15,77 @@ const isAdmin = (req,res,next) => {
 
 //CREATE
 router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) => {
-	//userId
+
 	let userId = req.user._id
 	let reserverName = req.user.firstname + " " + req.user.lastname
+	let roomId = req.body.roomId
 
-	//roomId
-	Room.findById(req.body.roomId)
+	//get inputted time
+	let reserveFrom = new Date (req.body.reserveFrom).getTime();
+	let reserveUntil =  new Date (req.body.reserveUntil).getTime();
+	
+	// console.log(reserveFrom)
+	// console.log(reserveUntil)
+
+
+	if (reserveFrom >= reserveUntil){
+		return res.status(400).send({
+			error: "End time must be greater than Start time"
+			})
+	};
+
+	//function for checking if reservation is already existing
+	let reservationExists = (existingReserveFrom, existingReserveUntil, reserveFrom, reserveUntil) =>{
+		if (reserveFrom > existingReserveFrom && reserveFrom < existingReserveUntil || 
+      		existingReserveFrom >= reserveFrom && existingReserveFrom < reserveUntil) {
+      
+      		return res.status(400).send({
+			error: "Reservation cannot be made"
+			})
+		}
+	    return true
+	}
+
+	Room.findById(roomId)
 	.then(room => {
-		
-		//reservation details
+
+		//get all reservations of chosen room using roomId
+		Reservation.find({roomId: room._id})
+		.then(reservations => {
+
+			return reservations.map(reservation => {
+				//get all existing reserveFrom and reserveUntil
+				let existingReserveFrom = new Date(reservation.reserveFrom).getTime()
+				let existingReserveUntil = new Date(reservation.reserveUntil).getTime()
+
+					// console.log(existingReserveFrom)
+					// console.log(existingReserveUntil)
+
+				//call function reservationExists and pass boolean to result variable
+				let result = reservationExists(existingReserveFrom,existingReserveUntil,reserveFrom,reserveUntil)
+
+				//boolean result
+				return result
+			})
+		})
+
+		// reservation details
 		Reservation.create({
-		userId: userId,
-		reserverName: reserverName,
-		roomId: req.body.roomId,
-		roomName: room.name,
-		price: room.price,
-		reservedDateFrom: req.body.reservedDateFrom,
-		reservedDateTo: req.body.reservedDateTo
+			userId: userId,
+			reserverName: reserverName,
+			roomId: req.body.roomId,
+			roomName: room.name,
+			price: room.price,
+			reserveFrom: req.body.reserveFrom,
+			reserveUntil: req.body.reserveUntil
 		})
 		.then(reservation => {
 			res.send(reservation)
 		})
+		.catch(next)
 
 	})
+	
 
 })
 
