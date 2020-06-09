@@ -1,6 +1,8 @@
 const express = require('express'); //from file npm install express 
 const bodyParser = require('body-parser'); //npm install body-parser
 const mongoose = require('mongoose'); //npm install mongoose
+const cors = require('cors'); //npm install cors
+require('dotenv').config(); //npm install dotenv
 
 const rooms = require('./routes/rooms');
 const reservations = require('./routes/reservations');
@@ -11,14 +13,17 @@ const app = express();
 const port = process.env.PORT || 5000
 
 //connect to database
-mongoose.connect('mongodb://localhost:27017/URRS', 
+mongoose.connect(process.env.ATLAS, 
 	{ 
 		useNewUrlParser: true,
-		useUnifiedTopology: true
+		useUnifiedTopology: true,
+		useCreateIndex: true,
+		useFindAndModify : true,
 	 }  
 	);
 
 app.use(bodyParser.json())
+app.use(cors());
 
 //middlewares
 app.use('/rooms', rooms);
