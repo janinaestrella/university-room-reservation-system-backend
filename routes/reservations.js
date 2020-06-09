@@ -24,8 +24,8 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 	let reserveFrom = new Date (req.body.reserveFrom).getTime();
 	let reserveUntil =  new Date (req.body.reserveUntil).getTime();
 	
-	// console.log(reserveFrom)
-	// console.log(reserveUntil)
+	// console.log(reserveFrom) 8:20
+	// console.log(reserveUntil) 9:20
 
 
 	if (reserveFrom >= reserveUntil){
@@ -37,8 +37,11 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 	//function for checking if reservation is already existing
 	let reservationExists = (existingReserveFrom, existingReserveUntil, reserveFrom, reserveUntil) =>{
 		if (reserveFrom > existingReserveFrom && reserveFrom < existingReserveUntil || 
+			//8:20 > 8:00 (true) && 8:20 < 9:00 (true) (TRUE) ||
       		existingReserveFrom >= reserveFrom && existingReserveFrom < reserveUntil) {
-      
+      		//8:00 >= 8:20 (false) && 8:20 < 9:20 (true) (FALSE)
+      		//TRUE || FALSE is TRUE so return error
+
       		return res.status(400).send({
 			error: "Reservation cannot be made"
 			})
@@ -58,8 +61,8 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 				let existingReserveFrom = new Date(reservation.reserveFrom).getTime()
 				let existingReserveUntil = new Date(reservation.reserveUntil).getTime()
 
-					// console.log(existingReserveFrom)
-					// console.log(existingReserveUntil)
+					// console.log(existingReserveFrom) 8:00
+					// console.log(existingReserveUntil) 9:00
 
 				//call function reservationExists and pass boolean to result variable
 				let result = reservationExists(existingReserveFrom,existingReserveUntil,reserveFrom,reserveUntil)
