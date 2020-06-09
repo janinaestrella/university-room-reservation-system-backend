@@ -30,6 +30,7 @@ app.use('/rooms', rooms);
 app.use('/reservations', reservations);
 app.use('/users', users);
 app.use('/public', express.static('assets/images'))
+app.use('/reservations', reservations);
 
 // error handling middleware
 app.use((err,req,res,next)=> {

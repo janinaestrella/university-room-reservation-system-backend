@@ -3,17 +3,36 @@ const Schema = mongoose.Schema;
 
 
 const ReservationSchema = new Schema({
-	studentId: {
+	userId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
 	},
 
-	studentName: {
-		type: String
+	reserverName: {
+		type: String,
 	},
 	
-	//Requested rooms
-	rooms: [{}],
+	//Requested room
+	roomId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Room'
+	},
+
+	roomName: {
+		type: String
+	},
+
+	reservedDateFrom: {
+		type: String
+	},
+
+	reservedDateTo: {
+		type: String
+	},
+
+	price: {
+		type: Number
+	},
 
 	// dateIn, dateOut
 	// timeIn, timeOut
