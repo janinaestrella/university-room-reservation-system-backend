@@ -92,5 +92,24 @@ router.get('/:id', passport.authenticate('jwt', {session:false}), (req,res,next)
 })
 
 //UPDATE STATUS
+router.put('/:id', passport.authenticate('jwt', {session:false}), (req,res,next) => {
+
+	//if admin is true, allow to update reservation status
+	if (req.user.isAdmin){
+		Reservation.findByIdAndUpdate(
+			req.params.id,
+			{ isApproved: req.body.isApproved }, 
+			{ new: true } 
+		)
+		.then(reservation => {
+			return res.send(reservation)
+		})
+		.catch(next)
+	
+	//if admin is false, user is forbidde to update reservation status
+	} else {
+		return res.status(403).send("Forbidden")
+	}
+})
 
 module.exports = router;
