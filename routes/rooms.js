@@ -4,6 +4,15 @@ const Room = require ('./../models/Room');
 const passport = require('passport');
 require('./../passport-setup');
 
+//middleware for checking authorization
+const isAdmin = (req,res,next) => {
+	if(req.user.isAdmin){
+		return next();
+	} else {
+		return res.status(403).send("Forbidden")
+	}
+}
+
 //multer settings
 //set the destination where the file will be saved
 const storage = multer.diskStorage({
@@ -22,7 +31,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage }) 
 
 //CREATE
-router.post('/', passport.authenticate('jwt', {session:false}), upload.single('image'), (req, res, next) => {
+router.post('/', passport.authenticate('jwt', {session:false}), upload.single('image'), isAdmin, (req, res, next) => {
 	req.body.image = req.file.filename
 	Room.create(req.body)
 	.then (room => res.send(room))
@@ -49,7 +58,7 @@ router.get('/:id', (req,res,next) => {
 })
 
 //DELETE
-router.delete('/:id', passport.authenticate('jwt', {session:false}), (req,res,next) => {
+router.delete('/:id', passport.authenticate('jwt', {session:false}), isAdmin, (req,res,next) => {
 	Room.findByIdAndRemove(req.params.id)
 	.then (room => {
 		return res.send({
@@ -60,7 +69,7 @@ router.delete('/:id', passport.authenticate('jwt', {session:false}), (req,res,ne
 })
 
 //EDIT
-router.put('/:id', passport.authenticate('jwt', {session:false}), upload.single('image'), (req,res,next) => {
+router.put('/:id', passport.authenticate('jwt', {session:false}), upload.single('image'), isAdmin, (req,res,next) => {
 
 	//update image if new image is existing, else do nothing
 	if(req.file){
