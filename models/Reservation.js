@@ -1,5 +1,6 @@
 const mongoose = require ('mongoose');
 const Schema = mongoose.Schema;
+const moment = require('moment');
 
 
 const ReservationSchema = new Schema({
@@ -23,11 +24,11 @@ const ReservationSchema = new Schema({
 	},
 
 	reservedDateFrom: {
-		type: String
+		type: Date
 	},
 
 	reservedDateTo: {
-		type: String
+		type: Date
 	},
 
 	price: {
