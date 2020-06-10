@@ -40,7 +40,7 @@ router.post('/', passport.authenticate('jwt', {session:false}), upload.single('i
 
 //GET ALL or INDEX
 router.get('/', (req,res,next) => {
-	Room.find()
+	Room.find().sort({name:1})
 	.then (rooms => {
 		return res.send(rooms)
 	})
