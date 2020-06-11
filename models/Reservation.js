@@ -22,15 +22,18 @@ const ReservationSchema = new Schema({
 	},
 
 	reserveDate: {
-		type: Date
+		type: Date,
+		required: [true, 'Reservation date is required']
 	},
 
 	reserveTimeStart: {
-		type: Date
+		type: Date,
+		required: [true, 'Start time of reservation date is required']
 	},
 
 	reserveTimeEnd: {
-		type: Date
+		type: Date,
+		required: [true, 'End time of reservation date is required']
 	},
 
 	price: {

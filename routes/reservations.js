@@ -24,8 +24,8 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 	let reserveStart = new Date (req.body.reserveTimeStart).getTime();
 	let reserveEnd =  new Date (req.body.reserveTimeEnd).getTime();
 	
-	console.log(reserveStart) //8:20
-	console.log(reserveEnd) //9:20
+	// console.log(reserveStart) //8:20
+	// console.log(reserveEnd) //9:20
 
 
 	if (reserveStart >= reserveEnd){
@@ -36,7 +36,7 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 
 	//function for checking if reservation is already existing
 	let reservationExists = (existingReserveStart, existingReserveEnd, reserveStart, reserveEnd) =>{
-		if (reserveStart >= existingReserveStart && reserveStart < existingReserveEnd || 
+		if (reserveStart > existingReserveStart && reserveStart < existingReserveEnd || 
 			//8:20 > 8:00 (true) && 8:20 < 9:00 (true) (TRUE) ||
       		existingReserveStart >= reserveStart && existingReserveStart < reserveEnd) {
       		//8:00 >= 8:20 (false) && 8:20 < 9:20 (true) (FALSE)
@@ -53,7 +53,10 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 	.then(room => {
 
 		//get all reservations of chosen room using roomId
-		Reservation.find({roomId: room._id})
+		Reservation.find({
+			roomId: room._id,
+			reserveDate: req.body.reserveDate
+		})
 		.then(reservations => {
 
 			return reservations.map(reservation => {
@@ -61,8 +64,8 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 				let existingReserveStart = new Date(reservation.reserveTimeStart).getTime()
 				let existingReserveEnd = new Date(reservation.reserveTimeEnd).getTime()
 
-					console.log(existingReserveStart) // 8:00
-					console.log(existingReserveEnd) // 9:00
+					// console.log(existingReserveStart) // 8:00
+					// console.log(existingReserveEnd) // 9:00
 
 				//call function reservationExists and pass boolean to result variable
 				let result = reservationExists(existingReserveStart,existingReserveEnd,reserveStart,reserveEnd)
