@@ -21,11 +21,15 @@ const ReservationSchema = new Schema({
 		type: String
 	},
 
-	reserveFrom: {
+	reserveDate: {
 		type: Date
 	},
 
-	reserveUntil: {
+	reserveTimeStart: {
+		type: Date
+	},
+
+	reserveTimeEnd: {
 		type: Date
 	},
 
