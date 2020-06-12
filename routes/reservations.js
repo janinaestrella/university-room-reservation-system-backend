@@ -19,6 +19,7 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 	let userId = req.user._id
 	let reserverName = req.user.firstname + " " + req.user.lastname
 	let roomId = req.body.roomId
+	let roomLocation = req.body.roomLocation
 
 	//get inputted time
 	let reserveStart = new Date (req.body.reserveTimeStart).getTime();
@@ -81,6 +82,7 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 			reserverName: reserverName,
 			roomId: req.body.roomId,
 			roomName: room.name,
+			roomLocation: room.location,
 			price: room.price,
 			reserveDate: req.body.reserveDate,
 			reserveTimeStart: req.body.reserveTimeStart,
@@ -100,7 +102,7 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 router.get('/', passport.authenticate('jwt', {session:false}), (req,res,next) => {
 	//if admin is true, view all transactions
 	if(req.user.isAdmin) {
-		Reservation.find()
+		Reservation.find().sort({reserveDate: 1, reserveTimeStart: 1})
 		.then(reservations => {
 			res.send(reservations)
 		})
