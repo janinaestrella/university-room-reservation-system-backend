@@ -36,7 +36,7 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 
 	//function for checking if reservation is already existing
 	let reservationExists = (existingReserveStart, existingReserveEnd, reserveStart, reserveEnd) =>{
-		if (reserveStart > existingReserveStart && reserveStart < existingReserveEnd || 
+		if (reserveStart >= existingReserveStart && reserveStart < existingReserveEnd || 
 			//8:20 > 8:00 (true) && 8:20 < 9:00 (true) (TRUE) ||
       		existingReserveStart >= reserveStart && existingReserveStart < reserveEnd) {
       		//8:00 >= 8:20 (false) && 8:20 < 9:20 (true) (FALSE)
@@ -166,5 +166,26 @@ router.put('/:id', passport.authenticate('jwt', {session:false}), (req,res,next)
 		return res.status(403).send("Forbidden")
 	}
 })
+
+// //DELETE
+// router.delete('/:id', passport.authenticate('jwt', {session:false}), (req,res,next) =>{
+// 	//admin and users can only delete their OWN reservations
+// 	Reservation.findOneAndRemove({
+// 		_id: req.params.id,
+// 		userId:req.user._id
+// 	})
+// 	.then(reservation => {
+// 		//display only user/admin own transaction
+// 		if(reservation){
+// 			res.send(reservation) 
+
+// 		//forbidden to delete other users' reservations
+// 		} else { 
+// 			return res.status(403).send("Forbidden")
+// 		}
+// 	})
+// 	.catch(next)
+
+// })
 
 module.exports = router;

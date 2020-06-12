@@ -21,6 +21,10 @@ const ReservationSchema = new Schema({
 		type: String
 	},
 
+	roomLocation: {
+		type: String
+	},
+
 	reserveDate: {
 		type: Date,
 		required: [true, 'Reservation date is required']
@@ -39,9 +43,6 @@ const ReservationSchema = new Schema({
 	price: {
 		type: Number
 	},
-
-	// dateIn, dateOut
-	// timeIn, timeOut
 
 	//Reservation status
 	isApproved: {
