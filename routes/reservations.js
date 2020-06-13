@@ -64,8 +64,8 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 			// reserveDate: req.body.reserveDate
 		})
 		.then(reservations => {
-
-			return reservations.map(reservation => {
+			let reservationClash = false;
+			reservations.map(reservation => {
 				//get all existing reserveStart and reserveEnd
 				let existingReserveStart = new Date(reservation.reserveTimeStart).getTime()
 				let existingReserveEnd = new Date(reservation.reserveTimeEnd).getTime()
@@ -74,29 +74,42 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 					// console.log(existingReserveEnd) // 9:00
 
 				//call function reservationExists and pass boolean to result variable
-				let result = reservationExists(existingReserveStart,existingReserveEnd,reserveStart,reserveEnd)
+				let reservationClash = reservationExists(existingReserveStart,existingReserveEnd,reserveStart,reserveEnd)
 
 				//boolean result
-				return result
+				console.log(reservationClash)
+				return reservationClash
 			})
-		})
 
-		// reservation details
-		Reservation.create({
-			userId: userId,
-			reserverName: reserverName,
-			roomId: req.body.roomId,
-			roomName: room.name,
-			roomLocation: room.location,
-			price: room.price,
-			reserveDate: convertedDate,
-			reserveTimeStart: req.body.reserveTimeStart,
-			reserveTimeEnd: req.body.reserveTimeEnd
+			// console.log (reservationClash)
+			if (!reservationClash){
+				console.log("save reservation")
+				// create reservation
+				Reservation.create({
+					userId: userId,
+					reserverName: reserverName,
+					roomId: req.body.roomId,
+					roomName: room.name,
+					roomLocation: room.location,
+					price: room.price,
+					reserveDate: convertedDate,
+					reserveTimeStart: req.body.reserveTimeStart,
+					reserveTimeEnd: req.body.reserveTimeEnd
+				})
+				.then(reservation => {
+					res.send(reservation)
+				})
+				.catch(next)
+
+			} else {
+				console.log("cannot save")
+				return res.status(400).send({
+				error: "Reservation cannot be made. Choose a different timeslot."
+				})
+				
+			}
+			
 		})
-		.then(reservation => {
-			res.send(reservation)
-		})
-		.catch(next)
 
 	})
 	
