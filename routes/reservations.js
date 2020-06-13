@@ -47,11 +47,9 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
       		//8:00 >= 8:20 (false) && 8:20 < 9:20 (true) (FALSE)
       		//TRUE || FALSE is TRUE so return error
 
-      		return res.status(400).send({
-			error: "Reservation cannot be made. Choose a different timeslot."
-			})
+      		return true
 		}
-	    return true
+	    return false
 	}
 
 	Room.findById(roomId)
@@ -74,14 +72,14 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 					// console.log(existingReserveEnd) // 9:00
 
 				//call function reservationExists and pass boolean to result variable
-				let reservationClash = reservationExists(existingReserveStart,existingReserveEnd,reserveStart,reserveEnd)
+				reservationClash = reservationExists(existingReserveStart,existingReserveEnd,reserveStart,reserveEnd)
 
 				//boolean result
-				console.log(reservationClash)
+				console.log("pasok after checking " + reservationClash)
 				return reservationClash
 			})
 
-			// console.log (reservationClash)
+			console.log ("reservation before condition:" + reservationClash)
 			if (!reservationClash){
 				console.log("save reservation")
 				// create reservation
