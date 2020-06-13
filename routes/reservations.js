@@ -3,6 +3,7 @@ const Reservation = require ('./../models/Reservation');
 const Room = require ('./../models/Room');
 const passport = require('passport');
 require('./../passport-setup');
+const moment = require('moment'); 
 
 //middleware for checking authorization
 const isAdmin = (req,res,next) => {
@@ -28,7 +29,10 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 	// console.log(reserveStart) //8:20
 	// console.log(reserveEnd) //9:20
 
-
+	//convert date to number using moment
+	let convertedDate = Number( moment(req.body.reserveDate).format('YYYYMMDD'))
+	// console.log(convertedDate)
+	
 	if (reserveStart >= reserveEnd){
 		return res.status(400).send({
 			error: "End time must be greater than Start time."
@@ -52,11 +56,12 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 
 	Room.findById(roomId)
 	.then(room => {
-
+		
 		//get all reservations of chosen room using roomId
 		Reservation.find({
 			roomId: room._id,
-			reserveDate: req.body.reserveDate
+			reserveDate: convertedDate
+			// reserveDate: req.body.reserveDate
 		})
 		.then(reservations => {
 
@@ -84,7 +89,7 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 			roomName: room.name,
 			roomLocation: room.location,
 			price: room.price,
-			reserveDate: req.body.reserveDate,
+			reserveDate: convertedDate,
 			reserveTimeStart: req.body.reserveTimeStart,
 			reserveTimeEnd: req.body.reserveTimeEnd
 		})

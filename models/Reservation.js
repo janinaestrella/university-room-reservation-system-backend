@@ -26,7 +26,7 @@ const ReservationSchema = new Schema({
 	},
 
 	reserveDate: {
-		type: Date,
+		type: Number,
 		required: [true, 'Reservation date is required']
 	},
 
