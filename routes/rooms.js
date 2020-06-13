@@ -32,6 +32,21 @@ const upload = multer({ storage })
 
 //CREATE
 router.post('/', passport.authenticate('jwt', {session:false}), upload.single('image'), isAdmin, (req, res, next) => {
+	//validation
+	const {
+		name,
+		price,
+		location,
+		description,
+		image
+	} = req.body;
+
+	if(!name || !price || !location || !description || !image){
+		return res.status(400).send({
+			error: "All fields are required"
+		})
+	}
+
 	req.body.image = req.file.filename
 	Room.create(req.body)
 	.then (room => res.send(room))

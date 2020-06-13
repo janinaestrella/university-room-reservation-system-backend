@@ -75,13 +75,13 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 				reservationClash = reservationExists(existingReserveStart,existingReserveEnd,reserveStart,reserveEnd)
 
 				//boolean result
-				console.log("pasok after checking " + reservationClash)
+				// console.log("pasok after checking " + reservationClash)
 				return reservationClash
 			})
 
-			console.log ("reservation before condition:" + reservationClash)
+			// console.log ("reservation before condition:" + reservationClash)
 			if (!reservationClash){
-				console.log("save reservation")
+				// console.log("save reservation")
 				// create reservation
 				Reservation.create({
 					userId: userId,
@@ -100,7 +100,7 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 				.catch(next)
 
 			} else {
-				console.log("cannot save")
+				// console.log("cannot save")
 				return res.status(400).send({
 				error: "Reservation cannot be made. Choose a different timeslot."
 				})
