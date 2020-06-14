@@ -90,6 +90,8 @@ router.post('/', passport.authenticate('jwt', {session:false}), (req,res,next) =
 					roomName: room.name,
 					roomLocation: room.location,
 					price: room.price,
+					description: room.description,
+					image: room.image,
 					reserveDate: convertedDate,
 					reserveTimeStart: req.body.reserveTimeStart,
 					reserveTimeEnd: req.body.reserveTimeEnd
@@ -136,9 +138,10 @@ router.get('/', passport.authenticate('jwt', {session:false}), (req,res,next) =>
 
 //GET SPECIFIC BY ID
 router.get('/:id', passport.authenticate('jwt', {session:false}), (req,res,next) => {
+
 	//if admin is true, view all transactions
 	if(req.user.isAdmin) {
-		Reservation.find()
+		Reservation.findById(req.params.id)
 		.then(reservations => {
 			res.send(reservations)
 		})
@@ -147,17 +150,16 @@ router.get('/:id', passport.authenticate('jwt', {session:false}), (req,res,next)
 	} else {
 		Reservation.find({
 			_id: req.params.id,
-			userId:req.user._id
+			userId: req.user._id
 		})
 		.then(reservation => {
-			console.log(reservation.length)
-			//display only users own transaction
-			if(reservation.length !== 0){
-				res.send(reservation) 
-
-			//forbidden to view other users' reservations
-			} else { 
+			//if reservation is empty,forbidden to view other users' reservations
+			if(reservation.length === 0){
 				return res.status(403).send("Forbidden")
+
+			} else { 
+			//display only users own transaction
+				res.send(reservation) 
 			}
 		})
 		.catch(next)

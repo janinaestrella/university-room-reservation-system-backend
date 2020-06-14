@@ -41,7 +41,6 @@ router.post('/', passport.authenticate('jwt', {session:false}), upload.single('i
 		image
 	} = req.body;
 	
-	console.log(req.body)
 	if(!name || !price || !location || !description){
 		return res.status(400).send({
 			error: "All fields are required"

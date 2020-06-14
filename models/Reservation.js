@@ -44,6 +44,14 @@ const ReservationSchema = new Schema({
 		type: Number
 	},
 
+	description: {
+		type: String,
+	},
+	
+	image: {
+		type: String,
+	},
+
 	//Reservation status
 	isApproved: {
 		type: Boolean,
