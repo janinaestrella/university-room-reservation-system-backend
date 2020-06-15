@@ -210,11 +210,11 @@ router.put('/:id', passport.authenticate('jwt', {session:false}), (req,res,next)
 
 // })
 
-//STRIPE
-router.post('/stripe', (req,res,next) => {
+//CREATE PAYMENT VIA STRIPE
+router.post('/stripe/:id', passport.authenticate('jwt', {session:false}), (req,res,next) => {
 	let price = req.body.price;
 
-	User.findOne({ _id: req.body.customerId })
+	User.findOne({ _id: req.body.userId })
         .then(user => {
             if (!user) {
                 res.status(500).send({ message: "Incomplete" })
@@ -241,9 +241,8 @@ router.post('/stripe', (req,res,next) => {
                             })
                         })
                         .then(charge => {
-                            // new charge create d on a new customer
-
-                            res.send(charge)
+                            // new charge created on a new customer
+                            res.send(charge.receipt_url)
                         })
                         .catch(err => {
                             res.send(err)
@@ -255,7 +254,8 @@ router.post('/stripe', (req,res,next) => {
                         customer: user.stripeCustomerId
                     })
                         .then(charge => {
-                            res.send(charge)
+                        	// console.log(charge.receipt_url)
+                            res.send(charge.receipt_url)
                         })
                         .catch(err => {
                             res.send(err)
