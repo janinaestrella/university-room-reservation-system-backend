@@ -18,7 +18,7 @@ mongoose.connect(process.env.ATLAS,
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		useCreateIndex: true,
-		useFindAndModify : true,
+		
 	 }  
 	);
 

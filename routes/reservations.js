@@ -4,6 +4,8 @@ const Room = require ('./../models/Room');
 const passport = require('passport');
 require('./../passport-setup');
 const moment = require('moment'); 
+const stripe = require('stripe')('sk_test_51Gu7VXJzsbKmTz04k3TwOELhVy1upS72gk1h09HJAumzWsS6rGgmVMewqIIkT6CAc8n5DJWvXD2KDqwZnz0E291r00hgDRakg2');
+const User = require('./../models/User')
 
 //middleware for checking authorization
 const isAdmin = (req,res,next) => {
@@ -207,5 +209,61 @@ router.put('/:id', passport.authenticate('jwt', {session:false}), (req,res,next)
 // 	.catch(next)
 
 // })
+
+//STRIPE
+router.post('/stripe', (req,res,next) => {
+	let price = req.body.price;
+
+	User.findOne({ _id: req.body.customerId })
+        .then(user => {
+            if (!user) {
+                res.status(500).send({ message: "Incomplete" })
+            } else {
+                if (!user.stripeCustomerId) {
+                    // create customer to stripe
+                    stripe.customers.create({ email: user.email })
+                        .then(customer => {
+                            return User.findByIdAndUpdate({ _id: user._id }, { stripeCustomerId: customer.id }, { new: true })
+                        })
+                        .then(user => {
+                            return stripe.customers.retrieve(user.stripeCustomerId)
+                        })
+                        .then(customer => {
+                            return stripe.customers.createSource(customer.id, {
+                                source: 'tok_visa'
+                            })
+                        })
+                        .then(source => {
+                            return stripe.charges.create({
+                                amount: price * 100,
+                                currency: 'usd',
+                                customer: source.customer
+                            })
+                        })
+                        .then(charge => {
+                            // new charge create d on a new customer
+
+                            res.send(charge)
+                        })
+                        .catch(err => {
+                            res.send(err)
+                        })
+                } else {
+                    stripe.charges.create({
+                        amount: price * 100,
+                        currency: 'usd',
+                        customer: user.stripeCustomerId
+                    })
+                        .then(charge => {
+                            res.send(charge)
+                        })
+                        .catch(err => {
+                            res.send(err)
+                        })
+                }
+            }
+        })
+
+})
 
 module.exports = router;
