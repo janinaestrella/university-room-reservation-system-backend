@@ -56,6 +56,11 @@ const ReservationSchema = new Schema({
 	isApproved: {
 		type: Boolean,
 		default: false
+	},
+
+	receipt: {
+		type: String,
+		default: ''
 	}
 	
 })

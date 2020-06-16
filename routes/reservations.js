@@ -242,24 +242,42 @@ router.post('/stripe/:id', passport.authenticate('jwt', {session:false}), (req,r
                         })
                         .then(charge => {
                             // new charge created on a new customer
-                            res.send(charge.receipt_url)
-                        })
-                        .catch(err => {
-                            res.send(err)
-                        })
+                            return	Reservation.findByIdAndUpdate(
+							req.params.id,
+							{ receipt: charge.receipt_url }, 
+							{ new: true } 
+							)
+		           		})
+		                .then(reservation => {
+		                	console.log(reservation)
+							return res.send(reservation)
+						})		
+		                .catch(err => {
+		                    res.send(err)
+		                })
                 } else {
                     stripe.charges.create({
                         amount: price * 100,
                         currency: 'usd',
                         customer: user.stripeCustomerId
                     })
-                        .then(charge => {
-                        	// console.log(charge.receipt_url)
-                            res.send(charge.receipt_url)
-                        })
-                        .catch(err => {
-                            res.send(err)
-                        })
+                    .then(charge => {
+                    	// console.log(charge.receipt_url)
+                        // res.send(charge)
+
+                    return	Reservation.findByIdAndUpdate(
+							req.params.id,
+							{ receipt: charge.receipt_url }, 
+							{ new: true } 
+						)
+               		})
+                    .then(reservation => {
+                    console.log(reservation)
+						return res.send(reservation)
+					})		
+                    .catch(err => {
+                        res.send(err)
+                    })
                 }
             }
         })
