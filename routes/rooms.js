@@ -3,6 +3,8 @@ const multer = require('multer');  //npm install multer for uploading and saving
 const Room = require ('./../models/Room');
 const passport = require('passport');
 require('./../passport-setup');
+const multerS3 = require('multer-s3');
+const AWS = require('aws-sdk');
 
 //middleware for checking authorization
 const isAdmin = (req,res,next) => {
