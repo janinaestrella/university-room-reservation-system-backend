@@ -115,7 +115,7 @@ router.put('/:id', passport.authenticate('jwt', {session:false}), upload.single(
 
 	//update image if new image is existing, else do nothing
 	if(req.file){
-		req.body.image = req.file.filename
+		req.body.image = req.file.location
 	}
 
 	Room.findByIdAndUpdate(
