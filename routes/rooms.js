@@ -15,25 +15,42 @@ const isAdmin = (req,res,next) => {
 	}
 }
 
+//cloud image uploader using multer-s3 
+AWS.config.loadFromPath('./s3_config.json');
+const s3 = new AWS.S3();
+
+const upload = multer({
+    storage: multerS3({
+        s3: s3,
+        acl: 'public-read',
+        bucket: 'uniroomsbucket',
+        key: function (req, file, cb) {
+            console.log(file);
+            cb(null,Date.now() + "-" + file.originalname )
+        }
+    })
+});
+
 //multer settings
 //set the destination where the file will be saved
-const storage = multer.diskStorage({
-	destination: function(req,file,cb){ 
-		cb(null,'assets/images') //null - error message
-	},
+// const storage = multer.diskStorage({
+// 	destination: function(req,file,cb){ 
+// 		cb(null,'assets/images') //null - error message
+// 	},
 
-	filename: function(req,file,cb){
-		//file will contain all information about the uploaded file
-		// console.log(file)
-		cb(null,Date.now() + "-" + file.originalname )
-	}
-})
+// 	filename: function(req,file,cb){
+// 		//file will contain all information about the uploaded file
+// 		console.log(file)
+// 		cb(null,Date.now() + "-" + file.originalname )
+// 	}
+// })
 
-//middleware to access multer 
-const upload = multer({ storage }) 
+// //middleware to access multer 
+// const upload = multer({ storage }) 
 
 //CREATE
 router.post('/', passport.authenticate('jwt', {session:false}), upload.single('image'), isAdmin, (req, res, next) => {
+	 // console.log(req.file);
 	//validation
 	const {
 		name,
@@ -55,7 +72,9 @@ router.post('/', passport.authenticate('jwt', {session:false}), upload.single('i
 		})
 	}
 
-	req.body.image = req.file.filename
+	// console.log(req.file.location)
+
+	req.body.image = req.file.location
 	Room.create(req.body)
 	.then (room => res.send(room))
 	.catch(next)
